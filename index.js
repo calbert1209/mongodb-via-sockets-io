@@ -1,9 +1,12 @@
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var http = require('http').Server(app),
+		io = require('socket.io')(http),
+		count = 0;
+		
 require('dotenv').load();
 
-// SERVER STUFF
+
+// CONNECT TO DATABASE
 // =====================================================================
 var mongoose   = require('mongoose');
 
@@ -11,11 +14,17 @@ mongoose.connect(process.env.MONGO_URI);
 // use the Schema created in time.js
 var Time = require('./time');
 
-var count = 0;
+
+// ROUTING FOR CLIENT VIEW
+// =====================================================================
 
 app.get('/',function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
+
+
+// ROUTING FOR WEB SOCKETS
+// =====================================================================
 
 io.on('connection', function(socket){
   
@@ -31,14 +40,12 @@ io.on('connection', function(socket){
     var q = JSON.parse(qry);
     
     Time.find(q, {_id:0}, function(err, stop_times){
-            if (err) io.emit('chat message', err);
-            
-            var nextTwoTimes = stop_times.slice(0,2);
-            io.emit('chat message', 'query: ' + qry);
-            io.emit('chat message','response: ' + nextTwoTimes);
-        });
-    
-    // io.emit('chat message', msg);
+					if (err) io.emit('chat message', err);
+					
+					var nextTwoTimes = stop_times.slice(0,2);
+					io.emit('chat message', 'query: ' + qry);
+					io.emit('chat message','response: ' + nextTwoTimes);
+			});
   });
   
   socket.on('disconnect', function(){
@@ -48,6 +55,9 @@ io.on('connection', function(socket){
   });
   
 });
+
+// LISTENING ON PORT 3030
+// =====================================================================
 
 http.listen(3000, function(){
   console.log('listening on *:3030');

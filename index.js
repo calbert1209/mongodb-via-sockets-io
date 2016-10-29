@@ -37,7 +37,15 @@ io.on('connection', function(socket){
   socket.on('query', function(qry){
     // reporting
     console.log(userId, 'query:',qry);
-    var q = JSON.parse(qry);
+    try{
+      var q = JSON.parse(qry);
+      console.log("qry parsed as: ", q);
+    }
+    catch(e){
+      console.error("error parsing query:", qry);
+      console.error(e);
+      return;
+    }
     
     Time.find(q, {_id:0}, function(err, stop_times){
 					if (err) io.emit('chat message', err);

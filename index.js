@@ -39,7 +39,7 @@ io.on('connection', function(socket){
     console.log(userId, 'query:',qry);
     try{
       var q = JSON.parse(qry);
-      console.log("qry parsed as: ", q);
+      console.log("query parsed as: ", q);
     }
     catch(e){
       console.error("error parsing query:", qry);

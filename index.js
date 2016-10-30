@@ -1,5 +1,5 @@
 var app = require('express')();
-var http = require('http').Server(app),
+var http = require('http').createServer(app),
 		io = require('socket.io')(http),
 		count = 0;
 		
@@ -68,5 +68,5 @@ io.on('connection', function(socket){
 // =====================================================================
 
 http.listen(3000, function(){
-  console.log('listening on *:3030');
+  console.log('listening on http://127.0.0.1:3000/');
 });

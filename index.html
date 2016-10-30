@@ -27,7 +27,9 @@
 		<script>
 			var socket = io();
 			$('form').submit(function(){
-				socket.emit('query', $('#m').val());
+                var cleanQuery = $('#m').val().replace(/([A-z-\$]+)(?=:)/gi, '\"$1\"');
+                console.log("scrubbed query: "+ cleanQuery)
+				socket.emit('query', cleanQuery);
 				$('#m').val('');
 				return false;
 			});
